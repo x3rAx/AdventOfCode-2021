@@ -1,4 +1,5 @@
 {
 	"python.pythonPath": ".venv/bin/python",
-	"nixEnvSelector.nixFile": "${workspaceRoot}/shell.nix"
+	"nixEnvSelector.nixFile": "${workspaceRoot}/shell.nix",
+	"python.formatting.provider": "black"
 }

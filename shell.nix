@@ -16,6 +16,7 @@ in pkgs.mkShell {
     ipykernel
     pandas
     matplotlib
+    black
   ]);
 
   # Certain Rust tools won't work without this
