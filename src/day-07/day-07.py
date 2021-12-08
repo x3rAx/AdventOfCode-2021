@@ -27,3 +27,22 @@ result = (med - df).abs().sum()
 
 print("Result:", result.astype(int)[0])
 
+
+#%% Part 2
+
+def calcFuel(steps:int):
+    # https://de.wikipedia.org/wiki/Gau%C3%9Fsche_Summenformel
+    return (steps * (steps + 1))/2
+
+positions = readPositions('input.txt')
+fuelPerPos = []
+
+for alignPos in range(len(positions)):
+    fuels = [calcFuel(abs(alignPos - pos)) for pos in positions]
+    fuel =  sum(fuels)
+
+    fuelPerPos.append(fuel)
+
+minFuel = min(fuelPerPos)
+
+print("Result:", minFuel)
