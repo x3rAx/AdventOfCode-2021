@@ -8,9 +8,6 @@ def readPositions(file: str):
 
 #%% Part 1
 
-import pandas as pd
-from pandas import DataFrame
-
 positions = readPositions('input.txt')
 positions.sort()
 median = positions[int(len(positions)/2)]
@@ -20,6 +17,9 @@ print("Result:", result)
 
 
 #%% Part 1 - Pandas
+
+import pandas as pd
+from pandas import DataFrame
 
 df = pd.read_csv('input.txt', header=None).astype(int).transpose()
 med = df.median()
@@ -37,7 +37,7 @@ def calcFuel(steps:int):
 positions = readPositions('input.txt')
 fuelPerPos = []
 
-for alignPos in range(len(positions)):
+for alignPos in range(min(positions), max(positions)):
     fuels = [calcFuel(abs(alignPos - pos)) for pos in positions]
     fuel =  sum(fuels)
 
