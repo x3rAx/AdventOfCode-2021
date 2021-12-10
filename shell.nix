@@ -13,10 +13,12 @@ in pkgs.mkShell {
   ];
   buildInputs = with pkgs; [
   ] ++ (with python3Packages; [
-    ipykernel
-    pandas
-    matplotlib
     black
+    ipykernel
+    matplotlib
+    pandas
+    scikitimage
+    scipy
   ]);
 
   # Certain Rust tools won't work without this
