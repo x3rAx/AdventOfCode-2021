@@ -43,7 +43,6 @@ import numpy as np
 
 octos = np.array(readInput("input.txt"))
 
-
 flashCounter = 0
 for i in range(100):
     flashCounter += simulateStep(octos)
@@ -51,3 +50,19 @@ for i in range(100):
     print(octos)
 
 print("Result:", flashCounter)
+
+
+#%% Part 2
+
+from typing import List, Tuple
+import numpy as np
+
+octos = np.array(readInput("input.txt"))
+counter = 0
+for counter in range(1, 1000):
+    flashCounter = simulateStep(octos)
+    print(flashCounter)
+    if flashCounter >= octos.size:
+        break
+
+print("Result:", counter)
