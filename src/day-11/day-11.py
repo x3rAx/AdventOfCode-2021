@@ -6,15 +6,7 @@ def readInput(inp: str):
         return [[int(n) for n in line.strip()] for line in file.readlines()]
 
 
-#%% Part 1
-
-from typing import List, Tuple
-import numpy as np
-
-octos = np.array(readInput("input.txt"))
-
-flashCounter = 0
-for i in range(100):
+def simulateStep(octos):
     flashList: List[Tuple[int, int]] = []
 
     for idx, octo in np.ndenumerate(octos):
@@ -41,8 +33,21 @@ for i in range(100):
     for idx in flashList:
         octos[idx] = 0
 
+    return len(flashList)
+
+
+#%% Part 1
+
+from typing import List, Tuple
+import numpy as np
+
+octos = np.array(readInput("input.txt"))
+
+
+flashCounter = 0
+for i in range(100):
+    flashCounter += simulateStep(octos)
     print(f"After step {i+1}:")
     print(octos)
-    flashCounter += len(flashList)
 
 print("Result:", flashCounter)
