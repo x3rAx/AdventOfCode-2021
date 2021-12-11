@@ -1,9 +1,9 @@
 let
   # Pinned nixpkgs, deterministic. Last updated: 2021-02-12.
-  pkgs = import (fetchTarball("https://github.com/NixOS/nixpkgs/archive/a58a0b5098f0c2a389ee70eb69422a052982d990.tar.gz")) {};
+  #pkgs = import (fetchTarball("https://github.com/NixOS/nixpkgs/archive/a58a0b5098f0c2a389ee70eb69422a052982d990.tar.gz")) {};
 
   # Specific NixOS release version. This is not the channel and does not get updated along with it.
-  #pkgs = import (fetchTarball("https://github.com/NixOS/nixpkgs/archive/refs/tags/21.05.tar.gz")) {};
+  pkgs = import (fetchTarball("https://github.com/NixOS/nixpkgs/archive/refs/tags/21.11.tar.gz")) {};
 
   # Rolling updates, not deterministic.
   #pkgs = import (fetchTarball("channel:nixpkgs-unstable")) {};
@@ -15,10 +15,6 @@ in pkgs.mkShell {
   ] ++ (with python3Packages; [
     black
     ipykernel
-    matplotlib
-    pandas
-    scikitimage
-    scipy
   ]);
 
   # Certain Rust tools won't work without this
