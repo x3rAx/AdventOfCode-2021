@@ -11,16 +11,29 @@ def readInput(inp: str):
 def maskAdjacent(idx, ndarray: np.ndarray):
     assert len(idx) == len(ndarray.shape), "Index and array dimensions must match"
 
-    mask = np.zeros(ndarray.shape, dtype=int)
+    mask = np.full(ndarray.shape, False)
 
     selector = []
     for dim, size in enumerate(mask.shape):
         selector.append(slice(max(0, idx[dim] - 1), min(idx[dim] + 2, size)))
 
-    mask[tuple(selector)] = 1
-    mask[idx] = 0
+    mask[tuple(selector)] = True
+    mask[idx] = False
 
     return mask
+
+
+def mask_ndenumerate(ndarray: np.ndarray, mask: np.ndarray):
+    assert ndarray.shape == mask.shape, "Array and mask must be of same shape"
+
+    for idx in mask_ndindex(mask):
+        yield idx, ndarray[idx]
+
+
+def mask_ndindex(mask: np.ndarray):
+    for idx in zip(*np.where(mask)):
+        if mask[idx]:
+            yield idx
 
 
 def simulateStep(octos):
@@ -34,12 +47,10 @@ def simulateStep(octos):
     for idx in flashList:
         mask = maskAdjacent(idx, octos)
 
-        neighbors = list(zip(*mask.nonzero()))
-
-        for neighbor in neighbors:
-            octos[neighbor] += 1
-            if octos[neighbor] == 10:
-                flashList.append(neighbor)
+        for idx in mask_ndindex(mask):
+            octos[idx] += 1
+            if octos[idx] == 10:
+                flashList.append(idx)
 
     for idx in flashList:
         octos[idx] = 0
