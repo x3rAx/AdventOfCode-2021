@@ -1,9 +1,26 @@
 #%% Setup
 
+import numpy as np
+
 
 def readInput(inp: str):
     with open(inp, "r") as file:
         return [[int(n) for n in line.strip()] for line in file.readlines()]
+
+
+def maskAdjacent(idx, ndarray: np.ndarray):
+    assert len(idx) == len(ndarray.shape), "Index and array dimensions must match"
+
+    mask = np.zeros(ndarray.shape, dtype=int)
+
+    selector = []
+    for dim, size in enumerate(mask.shape):
+        selector.append(slice(max(0, idx[dim] - 1), min(idx[dim] + 2, size)))
+
+    mask[tuple(selector)] = 1
+    mask[idx] = 0
+
+    return mask
 
 
 def simulateStep(octos):
@@ -15,13 +32,7 @@ def simulateStep(octos):
             flashList.append(idx)
 
     for idx in flashList:
-        mask = np.zeros(octos.shape, dtype=int)
-
-        rows = slice(max(0, idx[0] - 1), min(idx[0] + 2, mask.shape[0]))
-        cols = slice(max(0, idx[1] - 1), min(idx[1] + 2, mask.shape[1]))
-
-        mask[rows, cols] = 1
-        mask[idx] = 0
+        mask = maskAdjacent(idx, octos)
 
         neighbors = list(zip(*mask.nonzero()))
 
