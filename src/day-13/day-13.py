@@ -15,10 +15,10 @@ def readPaper(inp: str) -> tuple[np.ndarray, list[tuple[slice, slice]]]:
                 idx = int(idx)
                 if dim == "x":
                     slice_a = (slice(None), slice(None, idx))
-                    slice_b = (slice(None), slice(None, -idx - 1, -1))
+                    slice_b = (slice(None), slice(None, idx, -1))
                 if dim == "y":
                     slice_a = (slice(None, idx), slice(None))
-                    slice_b = (slice(None, -idx - 1, -1), slice(None))
+                    slice_b = (slice(None, idx, -1), slice(None))
                 slices.append((slice_a, slice_b))
                 continue
 
@@ -49,9 +49,29 @@ def printPaper(filename, d2array):
             file.write("\n")
 
 
+def foldPaper(paper, fold):
+    a = paper[fold[0]]
+    b = paper[fold[1]]
+
+    shapeMax = (max(a.shape[0], b.shape[0]), max(a.shape[1], b.shape[1]))
+
+    pad_row = max(0, shapeMax[0] - a.shape[0])
+    pad_col = max(0, shapeMax[1] - a.shape[1])
+    a = np.pad(a, ((pad_row, 0), (pad_col, 0)), "constant")
+
+    pad_row = max(0, shapeMax[0] - b.shape[0])
+    pad_col = max(0, shapeMax[1] - b.shape[1])
+    b = np.pad(b, ((pad_row, 0), (pad_col, 0)), "constant")
+
+    paper = a.copy()
+    paper[b == 1] = 1
+
+    return paper, a, b
+
+
 #%% Part 1
 
-paper, folds = readPaper("test-input.txt")
+paper, folds = readPaper("input-yyy.txt")
 
 print("Initial paper shape:", paper.shape)
 print("Initial paper dots:", len(paper.nonzero()[0]))
@@ -60,28 +80,37 @@ print("Initial paper dots:", len(paper.nonzero()[0]))
 firstFold = folds[0]
 print(firstFold)
 
-a = paper[firstFold[0]]
-b = paper[firstFold[1]]
+paper, a, b = foldPaper(paper, firstFold)
 #printPaper("paper-2-a.txt", a)
 #printPaper("paper-2-b.txt", b)
 
-paper = a
-paper[b == 1] = 1
-
 print("Paper shape:", paper.shape)
 print("Paper dots:", len(paper.nonzero()[0]))
-#printPaper("paper-2.txt", paper)
+#printPaper("paper-final.txt", paper)
 
 
 #%% Part 2
 
-paper, folds = readPaper("test-input.txt")
+#%matplotlib widget
+
+import matplotlib.pyplot as plt
+
+paper, folds = readPaper("input.txt")
+
+# plt.rcParams["figure.figsize"] = (20, 10)
+# plt.rcParams["figure.dpi"] = 600
 
 for fold in folds:
-    a = paper[fold[0]]
-    b = paper[fold[1]]
+    plt.imshow(paper, interpolation="nearest")
+    plt.show()
 
-    paper = a
-    paper[b == 1] = 1
+    paper, a, b = foldPaper(paper, fold)
+    plt.imshow(a, interpolation="nearest")
+    plt.show()
+    plt.imshow(b, interpolation="nearest")
+    plt.show()
 
-paper
+plt.imshow(paper, interpolation="nearest")
+plt.show()
+
+printPaper("paper-final.txt", paper)
