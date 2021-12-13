@@ -68,9 +68,8 @@ def getAllPaths(G: dict[str, list[str]], maxIters: int) -> list[list[str]]:
         node = path[-1]
 
         nextNodes = G[node]
-        nextNodes = list(filter(lambda x: x.isupper() or x not in path, nextNodes))
 
-        for nextNode in G[node]:
+        for nextNode in nextNodes:
             if nextNode == "end":
                 paths.append(path + [nextNode])
                 continue
