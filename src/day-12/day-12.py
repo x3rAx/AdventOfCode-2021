@@ -1,32 +1,5 @@
-#%% Setup graph
+#%% Setup
 
-from pprint import pprint
-
-#Read graph
-with open('input.txt', 'r') as file:
-    graph = file.read()
-
-
-# Build graph
-G = {}
-for line in graph.strip().splitlines():
-    line = line.strip()
-    a, b = line.split("-")
-
-    if not G.get(a):
-        G[a] = []
-
-    if not G.get(b):
-        G[b] = []
-
-    if a not in G[b]:
-        G[b].append(a)
-
-    if b not in G[a]:
-        G[a].append(b)
-
-
-#%% Part 1
 
 class Stack:
     _data: list[str]
@@ -52,37 +25,77 @@ class Stack:
         return f"<stack : {self._data}>"
 
 
-# Some sort of depth first search but we keep track of each incomplete path and
-# in each step just pull one of those incomplete paths and add another node
-# to it and put it back on the stack of incomplete paths until 'end' is found.
-incomplete = Stack()
-incomplete.push(['start'])
-paths = []
+# --- Setup graph ---
+def readGraph(inp: str):
+    G = {}
 
-for _ in range(100000):
-    print("---")
+    with open(inp, "r") as file:
+        for line in file.read().splitlines():
+            line = line.strip()
 
-    if not incomplete:
-        print("DONE")
-        break
+            a, b = line.split("-")
 
-    path = incomplete.pop()
-    print(f"START FROM {path}")
-    node = path[-1]
+            if not G.get(a):
+                G[a] = []
 
-    if node == 'end':
-        print("PATH", path)
-        paths.append(path)
-        continue
+            if not G.get(b):
+                G[b] = []
 
-    nextNodes = G[node]
-    nextNodes = list(filter(lambda x: x.isupper() or x not in path, nextNodes))
+            if a not in G[b]:
+                G[b].append(a)
 
-    for n in nextNodes:
-        incomplete.push(path + [n])
+            if b not in G[a]:
+                G[a].append(b)
 
-    print("  ", node)
-    print('  nextNodes ', nextNodes)
-    print('  incomplete', incomplete)
+    return G
 
-print(len(paths))
+
+def getAllPaths(G: dict[str, list[str]], maxIters: int) -> list[list[str]]:
+    # Some sort of depth first search but we keep track of each incomplete path and
+    # in each step just pull one of those incomplete paths and add another node
+    # to it and put it back on the stack of incomplete paths until 'end' is found.
+    incomplete = Stack()
+    incomplete.push(["start"])
+    paths = []
+
+    i = 0
+    while i < maxIters:
+        i += 1
+        print("---")
+
+        if not incomplete:
+            print("DONE")
+            break
+
+        path = incomplete.pop()
+        print(f"START FROM {path}")
+        node = path[-1]
+
+        if node == "end":
+            print("PATH", path)
+            paths.append(path)
+            continue
+
+        nextNodes = G[node]
+        nextNodes = list(filter(lambda x: x.isupper() or x not in path, nextNodes))
+
+        for n in nextNodes:
+            incomplete.push(path + [n])
+
+        print("  ", node)
+        print("  nextNodes ", nextNodes)
+        print("  incomplete", incomplete)
+
+    if i >= maxIters:
+        raise Exception(f"Maximum allowed iterations of {maxIters} exceeded")
+
+    return paths
+
+
+#%% Part 1
+
+G = readGraph("input.txt")
+paths = getAllPaths(G, maxIters=100000)
+
+print("")
+print("Result:", len(paths))
