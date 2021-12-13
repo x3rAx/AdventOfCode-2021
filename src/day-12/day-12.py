@@ -50,7 +50,12 @@ def readGraph(inp: str):
     return G
 
 
-def getAllPaths(G: dict[str, list[str]], maxIters: int) -> list[list[str]]:
+def getAllPaths(
+    G: dict[str, list[str]], maxIters: int, extraVisits=None
+) -> list[list[str]]:
+    if not extraVisits:
+        extraVisits = []
+
     # Some sort of depth first search but we keep track of each incomplete path and
     # in each step just pull one of those incomplete paths and add another node
     # to it and put it back on the stack of incomplete paths until 'end' is found.
@@ -73,8 +78,14 @@ def getAllPaths(G: dict[str, list[str]], maxIters: int) -> list[list[str]]:
             if nextNode == "end":
                 paths.append(path + [nextNode])
                 continue
-            if nextNode.islower() and nextNode in path:
+
+            if (
+                nextNode.islower()
+                and nextNode in path
+                and path.count(nextNode) > extraVisits.count(nextNode)
+            ):
                 continue
+
             incomplete.push(path + [nextNode])
 
     return paths
