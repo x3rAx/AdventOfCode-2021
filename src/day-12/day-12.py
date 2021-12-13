@@ -59,35 +59,24 @@ def getAllPaths(G: dict[str, list[str]], maxIters: int) -> list[list[str]]:
     paths = []
 
     i = 0
-    while i < maxIters:
+    while incomplete:
         i += 1
-        print("---")
-
-        if not incomplete:
-            print("DONE")
-            break
+        if i > maxIters:
+            raise Exception(f"Maximum allowed iterations of {maxIters} exceeded")
 
         path = incomplete.pop()
-        print(f"START FROM {path}")
         node = path[-1]
-
-        if node == "end":
-            print("PATH", path)
-            paths.append(path)
-            continue
 
         nextNodes = G[node]
         nextNodes = list(filter(lambda x: x.isupper() or x not in path, nextNodes))
 
-        for n in nextNodes:
-            incomplete.push(path + [n])
-
-        print("  ", node)
-        print("  nextNodes ", nextNodes)
-        print("  incomplete", incomplete)
-
-    if i >= maxIters:
-        raise Exception(f"Maximum allowed iterations of {maxIters} exceeded")
+        for nextNode in G[node]:
+            if nextNode == "end":
+                paths.append(path + [nextNode])
+                continue
+            if nextNode.islower() and nextNode in path:
+                continue
+            incomplete.push(path + [nextNode])
 
     return paths
 
