@@ -98,3 +98,32 @@ paths = getAllPaths(G, maxIters=100000)
 
 print("")
 print("Result:", len(paths))
+
+
+#%% Part 2
+
+from copy import deepcopy
+from pprint import pprint
+
+
+def isSmallCave(cave):
+    return cave.islower() and cave != "start" and cave != "end"
+
+
+maxIters = 1000000
+G = readGraph("input.txt")
+
+allPaths = getAllPaths(G, maxIters=maxIters)
+
+for smallCave in filter(isSmallCave, G.keys()):
+    print(smallCave)
+    paths = getAllPaths(G, maxIters=maxIters, extraVisits=[smallCave])
+    paths = filter(lambda path: path.count(smallCave) == 2, paths)
+
+    allPaths += paths
+
+print("")
+print("Result:", len(allPaths))
+# allPaths
+
+# %%
