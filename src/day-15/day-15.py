@@ -1,8 +1,12 @@
-#%% Part 1
+#%% Setup
 
 import numpy as np
 from scipy.sparse import csr_matrix
 from scipy.sparse import csgraph
+
+
+def readCave(inp: str):
+    return np.genfromtxt(inp, dtype=int, delimiter=1)
 
 
 def buildGraph(cave):
@@ -56,7 +60,9 @@ def leastRisk(cave, predecessors):
     return costSum
 
 
-cave = np.genfromtxt("input.txt", dtype=int, delimiter=1)
+#%% Part 1
+
+cave = readCave("input.txt")
 graph = buildGraph(cave)
 predecessors = dijkstra(graph, exitIndex=len(cave.flat) - 1)
 costSum = leastRisk(cave, predecessors)
@@ -94,3 +100,44 @@ for u, v in G.edges:
 
 print("Alternative 2 - Result:", shortest_path_length(G, (0, 0), (n - 1, n - 1), "weight"))
 
+
+#%% Part 2
+
+from networkx.algorithms.shortest_paths.generic import shortest_path_length
+from networkx.classes.digraph import DiGraph
+from networkx import grid_2d_graph
+
+
+def enlargeCave(cave, right: int = 1, down: int = 1):
+    newCave = cave.copy()
+
+    # Enlarge to the right
+    newCaveParts = []
+    for i in range(right):
+        newPart = newCave
+        newPart = (newPart - 1 + i) % 9 + 1
+        newCaveParts.append(newPart)
+    newCave = np.block(newCaveParts)
+
+    # Enlarge to the right
+    newCaveParts = []
+    for i in range(down):
+        newPart = newCave
+        newPart = (newPart - 1 + i) % 9 + 1
+        newCaveParts.append([newPart])
+    newCave = np.block(newCaveParts)
+
+    return newCave
+
+
+cave = readCave("input.txt")
+cave = enlargeCave(cave, right=5, down=5)
+
+n = cave.shape[0]
+m = cave.shape[1]
+G = grid_2d_graph(n, m, create_using=DiGraph)
+
+for u, v in G.edges:
+    G[u][v]["weight"] = cave[v[1], v[0]]
+
+print("Result:", shortest_path_length(G, (0, 0), (n - 1, n - 1), "weight"))
