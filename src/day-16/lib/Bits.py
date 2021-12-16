@@ -36,7 +36,7 @@ class Bits:
         for rest in range(count, 0, -4):
             l = min(4, rest)
             bits = self.readBits(l)
-            if l > 4:
+            if l < 4:
                 bits <<= 4 - l
             data.append(bits)
 
