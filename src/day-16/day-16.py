@@ -1,14 +1,22 @@
-#%%
+#%% Part 1
 
 from icecream import ic
 from lib import Bits
 from lib import BitsParser
 
-inp = "input.txt"
-with open(inp, "r") as file:
-    bits = Bits.fromHex(file.read().strip())
 
-bits = Bits.fromHex("EE00D40C823060")
+def readBitsMessage(inp: str):
+    with open(inp, "r") as file:
+        return Bits.fromHex(file.read().strip())
+
+
+#bits = Bits.fromHex("8A004A801A8002F478") # 16
+#bits = Bits.fromHex("620080001611562C8802118E34") # 12
+#bits = Bits.fromHex("C0015000016115A2E0802F182340") # 23
+#bits = Bits.fromHex("A0016C880162017C3686B18A3D4780") # 31
+
+bits = readBitsMessage("input.txt")
 parser = BitsParser()
 msg = ic(parser.parse(bits))
 
+print("Result:", parser.versionSum)

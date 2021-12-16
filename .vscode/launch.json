@@ -1,0 +1,12 @@
+{
+    "configurations": [
+        {
+            "name": "Python: Current File",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/day-16/day-16.py",
+            "cwd": "${workspaceFolder}/src/day-16/",
+            "console": "integratedTerminal"
+        }
+    ]
+}

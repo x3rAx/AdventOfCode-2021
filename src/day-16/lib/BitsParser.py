@@ -2,14 +2,21 @@ from .Bits import Bits
 from .BitsPacket import BitsPacket, Type
 from icecream import ic
 
+
 class BitsParser:
+    versionSum = 0
+
     def parse(self, bits: Bits):
+        self.versionSum = 0
+
         return self._readPacket(bits)
 
     def _readPacket(self, bits: Bits):
         version = bits.readBits(3)
         typeID = bits.readBits(3)
         value = None
+
+        self.versionSum += version
 
         if typeID == Type.LITERAL_VALUE.value:
             value = self._readValue(bits)
