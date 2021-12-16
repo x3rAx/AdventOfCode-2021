@@ -5,16 +5,21 @@ class Bits:
     _offset = -1
     _bitOffset = 4
     _data = None
+    _len = 0
     _currentNibble = None
 
-    def __init__(self, data):
+    def __init__(self, data, length: int = None):
+        if not length:
+            length = len(data) * 4
+        self._len = length
         self._data = data
 
     def fromHex(hexStr: str) -> Bits:
         return Bits([int(char, 16) for char in hexStr])
 
     def hasData(self) -> bool:
-        return self._offset < len(self._data) and self._bitOffset < 4
+        pos = self._offset * 4 + self._bitOffset
+        return pos < self._len
 
     def readBits(self, count: int):
         assert 0 < count <= 8, f"Count must be `]0;8]` when reading bits. Was `{count}`"
@@ -40,7 +45,7 @@ class Bits:
                 bits <<= 4 - l
             data.append(bits)
 
-        return Bits(data)
+        return Bits(data, count)
 
     def readInt(self, count):
         value = 0x0
@@ -50,4 +55,3 @@ class Bits:
             value |= self.readBit()
 
         return value
-
