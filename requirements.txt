@@ -3,4 +3,5 @@ numpy
 pandas
 scikit-image >= 0.19
 scipy
-networx
+networkx
+icecream

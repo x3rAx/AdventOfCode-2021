@@ -1,6 +1,6 @@
 {
-	"python.pythonPath": "/home/x3ro/Projects/x3ro/advent-of-code-2021/.venv/bin/python",
-	"nixEnvSelector.nixFile": "${workspaceRoot}/shell.nix",
+    "python.pythonPath": "/home/x3ro/Projects/x3ro/advent-of-code-2021/.venv/bin/python",
+    "nixEnvSelector.nixFile": "${workspaceRoot}/shell.nix",
     "python.formatting.provider": "black",
     "python.linting.prospectorEnabled": false,
     "python.linting.enabled": false
