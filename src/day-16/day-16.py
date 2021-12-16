@@ -4,6 +4,8 @@ from icecream import ic
 from lib import Bits
 from lib import BitsParser
 
+ic.disable()
+
 
 def readBitsMessage(inp: str):
     with open(inp, "r") as file:
@@ -19,4 +21,5 @@ bits = readBitsMessage("input.txt")
 parser = BitsParser()
 msg = ic(parser.parse(bits))
 
-print("Result:", parser.versionSum)
+print("Result 1:", parser.versionSum)
+print("Result 2:", msg.value)
