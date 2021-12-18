@@ -115,6 +115,66 @@ def finalize_explode(num: Ref[list], stack: list = None):
         return True
 
 
+def findFirst(predicate, pair, stack=None):
+    if not stack:
+        stack = []
+
+    stack = stack.copy()
+
+    if predicate(pair, stack):
+        return pair, stack
+
+    if type(pair.val) is not list:
+        return None
+
+    stack.append(pair)
+
+    if result := findFirst(predicate, left(pair), stack):
+        return result
+    if result := findFirst(predicate, right(pair), stack):
+        return result
+
+    return None
+
+
+def finalize_explode2(pair: list):
+    def exploding(el, stack):
+        return type(el.val) is list and len(stack) >= 4
+    result = findFirst(exploding, pair)
+
+    if not result:
+        return False
+    pair, stack = result
+
+    leftBranch = None
+    rightBranch = None
+    current = pair
+    while stack and not (leftBranch and rightBranch):
+        child = current
+        current = stack.pop()
+        leftChild = left(current)
+        rightChild = right(current)
+        if not leftBranch and (
+            type(child.val) != type(leftChild.val) or child != leftChild
+        ):
+            leftBranch = leftChild
+        if not rightBranch and (
+            type(child.val) != type(rightChild.val) or child != rightChild
+        ):
+            rightBranch = rightChild
+
+    if leftBranch:
+        leftNum = rightmost(leftBranch)
+        leftNum += left(pair)
+    if rightBranch:
+        rightNum = leftmost(rightBranch)
+        rightNum += right(pair)
+
+    pair.val = 0
+
+    return True
+
+
 def convertToRefs(el):
     if type(el) is list:
         return Ref([convertToRefs(x) for x in el])
@@ -133,11 +193,14 @@ for i,number in enumerate(numbers):
     number = json.loads(number)
     num0 = convertToRefs(number)
     num1 = convertToRefs(number)
+    num2 = convertToRefs(number)
 
     ic.prefix = f"ic| {i}| "
     ic('----------')
     ic(num0)
     ic(finalize_explode(num1))
+    ic(finalize_explode2(num2))
 
     ic(num0)
     ic(num1)
+    ic(num2)
