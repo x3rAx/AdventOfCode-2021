@@ -60,61 +60,6 @@ def rightmost(pair: Ref[list]) -> Union[Ref, None]:
     return descend(right, pair)
 
 
-def finalize_explode(num: Ref[list], stack: list = None):
-    """
-    Returns true when done
-    Returns false while no pair is being exploded
-    """
-    if not stack:
-        stack = []
-    stack = stack.copy()
-
-    if type(num.val) is int:
-        ic("num", len(stack), num)
-        return False
-
-    if len(stack) >= 4:
-        ic("len", len(stack), num)
-
-        branchStack = stack.copy()
-        leftBranch = None
-        rightBranch = None
-        current = num
-        while branchStack and not (leftBranch and rightBranch):
-            child = current
-            current = branchStack.pop()
-            leftChild = left(current)
-            rightChild = right(current)
-            if not leftBranch and (
-                type(child.val) != type(leftChild.val) or child != leftChild
-            ):
-                leftBranch = leftChild
-            if not rightBranch and (
-                type(child.val) != type(rightChild.val) or child != rightChild
-            ):
-                rightBranch = rightChild
-
-        if leftBranch:
-            leftNum = rightmost(leftBranch)
-            leftNum += left(num)
-        if rightBranch:
-            rightNum = leftmost(rightBranch)
-            rightNum += right(num)
-
-        num.val = 0
-        return True
-
-    stack.append(num)
-
-    done = finalize_explode(left(num), stack)
-    if done:
-        return True
-
-    done = finalize_explode(right(num), stack)
-    if done:
-        return True
-
-
 def findFirst(predicate, pair, stack=None):
     if not stack:
         stack = []
@@ -137,9 +82,10 @@ def findFirst(predicate, pair, stack=None):
     return None
 
 
-def finalize_explode2(pair: list):
+def finalize_explode(pair: Ref[list]):
     def exploding(el, stack):
         return type(el.val) is list and len(stack) >= 4
+
     result = findFirst(exploding, pair)
 
     if not result:
@@ -189,18 +135,15 @@ numbers = [
     "[[3,[2,[8,0]]],[9,[5,[4,[3,2]]]]]",
 ]
 
-for i,number in enumerate(numbers):
+for i, number in enumerate(numbers):
     number = json.loads(number)
     num0 = convertToRefs(number)
     num1 = convertToRefs(number)
-    num2 = convertToRefs(number)
 
     ic.prefix = f"ic| {i}| "
-    ic('----------')
+    ic("----------")
     ic(num0)
     ic(finalize_explode(num1))
-    ic(finalize_explode2(num2))
 
     ic(num0)
     ic(num1)
-    ic(num2)
