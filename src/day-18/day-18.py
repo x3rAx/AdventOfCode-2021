@@ -142,10 +142,16 @@ def reduce_split(pair: Ref[list]):
     return True
 
 
-def add(a: Ref, b: Ref):
-    num = Ref([a, b])
-    ic("after addition", num)
-    snailfish_reduce(num)
+def add(*nums: list[Ref]):
+    num = None
+    for nextNum in nums:
+        if not num:
+            num = nextNum
+            continue
+
+        num = Ref([num, nextNum])
+        ic("after addition", num)
+        snailfish_reduce(num)
     return num
 
 
