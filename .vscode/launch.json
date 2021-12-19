@@ -1,12 +1,12 @@
 {
     "configurations": [
         {
-            "name": "Python: Current File",
+            "name": "Current Day",
             "type": "python",
             "request": "launch",
-            "program": "${workspaceFolder}/src/day-16/day-16.py",
-            "cwd": "${workspaceFolder}/src/day-16/",
-            "console": "integratedTerminal"
+            "program": "${workspaceFolder}/.vscode/launcher.py",
+            "args": [ "${workspaceFolder}/src", "${file}" ],
+            "console": "integratedTerminal",
         }
     ]
 }
