@@ -32,10 +32,10 @@ class Ref(Generic[T]):
         return self.val == self._deref(other)
 
     def __repr__(self) -> str:
-        return f"*{self.val.__repr__()}"
+        return f"*{repr(self.val)}"
 
     def __str__(self) -> str:
-        return f"{self.val.__str__()}"
+        return f"{str(self.val)}"
 
     def __bool__(self):
         return not not self.val
@@ -103,13 +103,9 @@ def reduce_explode(pair: Ref[list]):
         current = stack.pop()
         leftChild = left(current)
         rightChild = right(current)
-        if not leftBranch != None and (
-            type(child.val) != type(leftChild.val) or child != leftChild
-        ):
+        if not leftBranch != None and child is not leftChild:
             leftBranch = leftChild
-        if not rightBranch != None and (
-            type(child.val) != type(rightChild.val) or child != rightChild
-        ):
+        if not rightBranch != None and child is not rightChild:
             rightBranch = rightChild
 
     if leftBranch != None:
