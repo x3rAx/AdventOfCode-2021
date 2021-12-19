@@ -142,6 +142,10 @@ def finalize_split(pair: Ref[list]):
     return True
 
 
+def add(a: Ref, b: Ref):
+    return Ref([a, b])
+
+
 def convertToRefs(el):
     if type(el) is list:
         return Ref([convertToRefs(x) for x in el])
@@ -175,3 +179,21 @@ for i in range(5, 15):
     num = Ref(i)
     finalize_split(num)
     ic(i, num)
+
+ic("----------")
+
+a = convertToRefs(json.loads("[[[[4,3],4],4],[7,[[8,4],9]]]"))
+b = convertToRefs(json.loads("[1,1]"))
+
+num = add(a, b)
+print("after addition", num)
+while True:
+    wasExploded = finalize_explode(num)
+    if wasExploded:
+        print("after explode", num)
+    wasSplit = finalize_split(num)
+    if wasSplit:
+        print("after split", num)
+    if not wasExploded and not wasSplit:
+        break
+
