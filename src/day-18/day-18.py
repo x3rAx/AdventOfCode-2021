@@ -1,4 +1,4 @@
-#%%
+#%% Setup
 
 from __future__ import annotations
 
@@ -206,6 +206,8 @@ def toStr(num: Ref, depth=0):
     return f"{colorStart}{num}{colorEnd}"
 
 
+#%% Tests
+
 numbers = [
     "[[[[[9,8],1],2],3],4]",
     "[7,[6,[5,[4,[3,2]]]]]",
@@ -316,3 +318,15 @@ for nextNum, expected in zip(nums, partialResults):
     print(f"? {expected}")
     print(result == expected)
     print("")
+
+
+#%% Part 1
+
+ic.disable()
+with open("input.txt") as file:
+    nums = [convertToRefs(json.loads(line)) for line in file.read().splitlines()]
+
+result = add(*nums)
+magn = magnitude(result)
+
+print("Result 1:", magn)
