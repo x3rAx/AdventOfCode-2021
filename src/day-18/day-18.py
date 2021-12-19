@@ -337,3 +337,23 @@ result = add(*nums)
 magn = magnitude(result)
 
 print("Result 1:", magn)
+
+
+#%% Part 2
+
+import itertools as it
+
+ic.disable()
+with open("input.txt") as file:
+    nums = [json.loads(line) for line in file.read().splitlines()]
+
+magnitudes = []
+for numA, numB in it.permutations(nums, 2):
+    numARef = convertToRefs(numA)
+    numBRef = convertToRefs(numB)
+
+    num = add(numARef, numBRef)
+    magn = magnitude(num)
+    magnitudes.append(magn)
+
+print("Result 2:", max(magnitudes))
