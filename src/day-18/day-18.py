@@ -152,6 +152,12 @@ def convertToRefs(el):
     return Ref(el)
 
 
+def magnitude(el: Ref):
+    if type(el.val) is list:
+        return 3 * magnitude(left(el)) + 2 * magnitude(right(el))
+    return el.val
+
+
 numbers = [
     "[[[[[9,8],1],2],3],4]",
     "[7,[6,[5,[4,[3,2]]]]]",
@@ -197,3 +203,9 @@ while True:
     if not wasExploded and not wasSplit:
         break
 
+
+ic("----------")
+
+ic(magnitude(convertToRefs(4)))
+ic(magnitude(convertToRefs([4,2])))
+ic(magnitude(convertToRefs([9,[4,2]])))
