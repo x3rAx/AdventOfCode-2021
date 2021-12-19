@@ -149,25 +149,27 @@ def add(*nums: list[Ref]):
             num = nextNum
             continue
 
+        ic(num)
+        ic("+", nextNum)
         num = Ref([num, nextNum])
-        ic("after addition", num)
         snailfish_reduce(num)
+        ic("=", num)
     return num
 
 
 def snailfish_reduce(num: Ref):
-    wasReduced = False
+    counter = 0
     while True:
-        wasExploded = reduce_explode(num)
-        if wasExploded:
+        counter += 1
+        print(f"~ {toStr(num)}")
+        if reduce_explode(num):
             ic("after explode", num)
-        wasSplit = reduce_split(num)
-        if wasSplit:
+            continue
+        if reduce_split(num):
             ic("after split", num)
-        if not wasExploded and not wasSplit:
-            break
-        wasReduced = True
-    return wasReduced
+            continue
+        break
+    return counter > 1
 
 
 def convertToRefs(el):
