@@ -68,3 +68,40 @@ V_start = -yMin
 maxHeight = int(triangularNumber(V_start - 1))
 
 print("Result 1:", maxHeight)
+
+
+#%% Part 2
+
+# Im sure there is a way to tackle this more mathematically like part 1 but for
+# some reason my brain shut down and I was bearly able to code the following
+# brute force approach 🙈
+
+xMin, xMax, yMin, yMax = readInp("input.txt")
+counter = 0
+
+ic.disable()
+for yVel in range(yMin, -yMin + 1):
+    yVelStart = yVel
+    for xVel in range(0, xMax + 1):
+        xVelStart = xVel
+        yVel = yVelStart
+        x = y = 0
+        for step in range(10000):
+            ic.prefix = (
+                f"[xVelStart: {xVelStart}, yVelStart:{yVelStart}, step: {step}] "
+            )
+            x += xVel
+            y += yVel
+
+            if xMin <= x <= xMax and yMin <= y <= yMax:
+                ic(x, y)
+                counter += 1
+                break
+            if x > xMax or y < yMin:
+                break
+
+            if xVel > 0:
+                xVel -= 1
+            yVel -= 1
+
+print("Result 2:", counter)
