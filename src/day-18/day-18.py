@@ -1,11 +1,14 @@
 #%%
 
 from __future__ import annotations
+
+import json
 from os import EX_PROTOCOL
 from typing import TypeVar, Generic, Union
 from icecream import ic
 from dataclasses import dataclass
-import json
+from math import ceil, floor
+
 
 T = TypeVar("T")
 
@@ -121,6 +124,24 @@ def finalize_explode(pair: Ref[list]):
     return True
 
 
+def finalize_split(pair: Ref[list]):
+    def splitting(el, stack):
+        return type(el.val) is int and el.val >= 10
+
+    result = findFirst(splitting, pair)
+
+    if not result:
+        return False
+    num, _ = result
+
+    num.val = [
+        Ref(floor(num.val / 2)),
+        Ref(ceil(num.val / 2)),
+    ]
+
+    return True
+
+
 def convertToRefs(el):
     if type(el) is list:
         return Ref([convertToRefs(x) for x in el])
@@ -147,3 +168,10 @@ for i, number in enumerate(numbers):
 
     ic(num0)
     ic(num1)
+
+ic.prefix = "ic| "
+ic("----------")
+for i in range(5, 15):
+    num = Ref(i)
+    finalize_split(num)
+    ic(i, num)
