@@ -103,19 +103,19 @@ def finalize_explode(pair: Ref[list]):
         current = stack.pop()
         leftChild = left(current)
         rightChild = right(current)
-        if not leftBranch and (
+        if not leftBranch != None and (
             type(child.val) != type(leftChild.val) or child != leftChild
         ):
             leftBranch = leftChild
-        if not rightBranch and (
+        if not rightBranch != None and (
             type(child.val) != type(rightChild.val) or child != rightChild
         ):
             rightBranch = rightChild
 
-    if leftBranch:
+    if leftBranch != None:
         leftNum = rightmost(leftBranch)
         leftNum += left(pair)
-    if rightBranch:
+    if rightBranch != None:
         rightNum = leftmost(rightBranch)
         rightNum += right(pair)
 
