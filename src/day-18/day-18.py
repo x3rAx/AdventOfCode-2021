@@ -85,7 +85,7 @@ def findFirst(predicate, pair, stack=None):
     return None
 
 
-def finalize_explode(pair: Ref[list]):
+def reduce_explode(pair: Ref[list]):
     def exploding(el, stack):
         return type(el.val) is list and len(stack) >= 4
 
@@ -124,7 +124,7 @@ def finalize_explode(pair: Ref[list]):
     return True
 
 
-def finalize_split(pair: Ref[list]):
+def reduce_split(pair: Ref[list]):
     def splitting(el, stack):
         return type(el.val) is int and el.val >= 10
 
@@ -146,10 +146,10 @@ def add(a: Ref, b: Ref):
     num = Ref([a, b])
     ic("after addition", num)
     while True:
-        wasExploded = finalize_explode(num)
+        wasExploded = reduce_explode(num)
         if wasExploded:
             ic("after explode", num)
-        wasSplit = finalize_split(num)
+        wasSplit = reduce_split(num)
         if wasSplit:
             ic("after split", num)
         if not wasExploded and not wasSplit:
@@ -185,7 +185,7 @@ for i, number in enumerate(numbers):
     ic.prefix = f"ic| {i}| "
     ic("----------")
     ic(num0)
-    ic(finalize_explode(num1))
+    ic(reduce_explode(num1))
 
     ic(num0)
     ic(num1)
@@ -194,7 +194,7 @@ ic.prefix = "ic| "
 ic("----------")
 for i in range(5, 15):
     num = Ref(i)
-    finalize_split(num)
+    reduce_split(num)
     ic(i, num)
 
 ic("----------")
