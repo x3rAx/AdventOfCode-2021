@@ -208,5 +208,30 @@ num = add(a, b)
 ic("----------")
 
 ic(magnitude(convertToRefs(4)))
-ic(magnitude(convertToRefs([4,2])))
-ic(magnitude(convertToRefs([9,[4,2]])))
+ic(magnitude(convertToRefs([4, 2])))
+ic(magnitude(convertToRefs([9, [4, 2]])))
+
+ic(
+    magnitude(
+        convertToRefs(
+            [[[[6, 6], [7, 6]], [[7, 7], [7, 0]]], [[[7, 7], [7, 7]], [[7, 8], [9, 9]]]]
+        )
+    )
+)
+
+ic("----------")
+ic(magnitude(convertToRefs([[1, 2], [[3, 4], 5]])) == 143)
+ic(magnitude(convertToRefs([[[[0, 7], 4], [[7, 8], [6, 0]]], [8, 1]])) == 1384)
+ic(magnitude(convertToRefs([[[[1, 1], [2, 2]], [3, 3]], [4, 4]])) == 445)
+ic(magnitude(convertToRefs([[[[3, 0], [5, 3]], [4, 4]], [5, 5]])) == 791)
+ic(magnitude(convertToRefs([[[[5, 0], [7, 4]], [5, 5]], [6, 6]])) == 1137)
+ic(
+    magnitude(
+        convertToRefs(
+            [[[[8, 7], [7, 7]], [[8, 6], [7, 7]]], [[[0, 7], [6, 6]], [8, 7]]]
+        )
+    )
+    == 3488
+)
+
+ic("----------")
