@@ -145,6 +145,12 @@ def reduce_split(pair: Ref[list]):
 def add(a: Ref, b: Ref):
     num = Ref([a, b])
     ic("after addition", num)
+    snailfish_reduce(num)
+    return num
+
+
+def snailfish_reduce(num: Ref):
+    wasReduced = False
     while True:
         wasExploded = reduce_explode(num)
         if wasExploded:
@@ -154,7 +160,8 @@ def add(a: Ref, b: Ref):
             ic("after split", num)
         if not wasExploded and not wasSplit:
             break
-    return num
+        wasReduced = True
+    return wasReduced
 
 
 def convertToRefs(el):
