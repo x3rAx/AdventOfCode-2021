@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import logging as log
 from os import EX_PROTOCOL
 from typing import TypeVar, Generic, Union
 from icecream import ic
@@ -157,7 +158,7 @@ def snailfish_reduce(num: Ref):
     counter = 0
     while True:
         counter += 1
-        print(f"~ {toStr(num)}")
+        log.info(f"~ {toStr(num)}")
         if reduce_explode(num):
             ic("after explode", num)
             continue
@@ -207,6 +208,8 @@ def toStr(num: Ref, depth=0):
 
 
 #%% Tests
+
+log.getLogger().setLevel(log.INFO)
 
 numbers = [
     "[[[[[9,8],1],2],3],4]",
@@ -310,14 +313,18 @@ for nextNum, expected in zip(nums, partialResults):
         num = nextNum
         continue
 
-    print(f"  {toStr(num)}")
-    print(f"+ {toStr(nextNum)}")
+    log.info(f"  {toStr(num)}")
+    log.info(f"+ {toStr(nextNum)}")
     num = add(num, nextNum)
     result = toStr(num)
-    print(f"= {result}")
-    print(f"? {expected}")
-    print(result == expected)
-    print("")
+    log.info(f"= {result}")
+    log.info(f"? {expected}")
+    log.info(result == expected)
+    log.info("")
+ic.enable()
+
+ic("---------- End of tests ----------")
+log.getLogger().setLevel(log.WARNING)
 
 
 #%% Part 1
