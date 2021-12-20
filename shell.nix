@@ -15,6 +15,8 @@ in pkgs.mkShell {
   ] ++ (with python3Packages; [
     black
     ipykernel
+    numpy
+    scipy
   ]);
 
   # Certain Rust tools won't work without this
