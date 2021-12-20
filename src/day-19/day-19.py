@@ -94,6 +94,8 @@ main_scanner = scanners[0]
 other_scanners = scanners[1:]
 
 unknown_scanners = other_scanners
+scannerPositions = [np.array([0, 0, 0])]
+
 while len(unknown_scanners):
     ic("=== Start batch ===")
     other_scanners = unknown_scanners
@@ -116,6 +118,7 @@ while len(unknown_scanners):
 
                 merged_probes = np.concatenate((main_scanner, pts))
                 main_scanner = np.unique(merged_probes, axis=0)
+                scannerPositions.append(np.array([0, 0, 0]) - offset)
 
                 break  # NOTE: Maybe there are other rotations that fit even better. If it does not work, remove this and go through all rotations and find the best match
         else:
@@ -123,3 +126,11 @@ while len(unknown_scanners):
 
 print("")
 print("Result 1:", len(main_scanner))
+
+
+#%% Part 2 - Requires part 1
+
+maxManhattanDistance = max(
+    sum(abs(a - b)) for a, b in (permutations(scannerPositions, 2))
+)
+print("Result 2:", maxManhattanDistance)
