@@ -6,3 +6,4 @@ scikit-image >= 0.19
 scipy
 networkx
 icecream
+pipe
