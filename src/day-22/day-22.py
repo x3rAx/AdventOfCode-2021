@@ -88,9 +88,6 @@ def createReactor(reactorCuboid):
     return np.zeros(tuple(reversed(np.max(reactorCuboid, axis=0) + 1)), dtype=int)
 
 
-#%% Part 1
-
-
 def canonizeCuboid(cuboid):
     return np.array(
         [
@@ -130,6 +127,8 @@ def cropLargeInstructions(instructions: list[Instruction]) -> list[Instruction]:
     return newInstructions
 
 
+#%% Part 1
+
 instructions = readRebootInstructions("input.txt")
 
 instructions = cropLargeInstructions(instructions)
@@ -150,3 +149,137 @@ ic(np.sum(reactor))
 activeCubes = np.sum(reactor)
 print()
 print("Result 1:", activeCubes)
+
+
+#%% Part 2
+
+instructions = readRebootInstructions("input.txt")
+
+# instructions = cropLargeInstructions(instructions)
+# reactorCuboid = createReactorCuboidFromInstructions(instructions)
+
+# instructions, reactorCuboid = translateToPositive(instructions, reactorCuboid)
+
+# reactor = createReactor(reactorCuboid)
+
+s = 0
+for instr in instructions:
+    cuboid = canonizeCuboid(instr.cuboid)
+    cuboid -= cuboid[0]
+    ic(cuboid, np.prod(cuboid[1]))
+    s += np.prod(cuboid[1])
+ic(s)
+
+#%%
+
+# NOTE: From here on, a cuboid must always fullfill the following requirements:
+#       - The first vector must always be the one closer to the origin. => If
+#         the second vector is closer to the origin, the volume is assumed to be
+#         negative.
+#       - The second vector is **exclusive**, meaning that it's coordinate is
+#         not part of the cuboids volume. E.g. `([10,10,10],[11,11,11])` has a
+#         volume of `0` and `([5,5,5],[11,11,11])` has a volume of `5*5*5=125`
+
+# TODO: Change everything to consider the second vector of a cuboid to be
+#       exclusive like described above.
+
+# fmt:off
+a = canonizeCuboid(np.array([
+    [10, 10],
+    [20, 20],
+]))
+b = canonizeCuboid(np.array( [
+    [5, 5],
+    [25, 25],
+]))
+b = canonizeCuboid(np.array( [
+    [5, 5],
+    [25, 25],
+]))
+# fmt:on
+
+
+def _make3d(vecOrMat: np.ndarray) -> np.ndarray:
+    if len(vecOrMat.shape) == 1:
+        # Vector
+        vecOrMat = [vecOrMat]
+    # Matrix
+    return np.array([[vec[0], vec[1], i] for i, vec in enumerate(vecOrMat)])
+
+
+def volume(canonizedCuboid: np.ndarray) -> int:
+    # TODO: cub[1] is going to be exclusive, so do `cub[1] -1` first
+    cub = canonizedCuboid
+    cub -= cub[0]
+    return np.prod(cub[1])
+
+
+def isAllPositive(vec: np.ndarray) -> bool:
+    return np.min(vec) > 0
+
+
+def isAllNegative(vec: np.ndarray) -> bool:
+    return np.max(vec) < 0
+
+
+def liesWithin(vec: np.ndarray, canonizedCuboid: np.ndarray) -> bool:
+    # TODO: Consider points within if they are greater or equal to the cuboids
+    #       first vector and if they are smaller than the cuboids second vector.
+    cub = canonizedCuboid
+    return isAllPositive(vec - cub[0]) and isAllNegative(vec - cub[1])
+
+
+def getCubeVertices(canonizedCuboid: np.ndarray) -> np.ndarray:
+    cub = canonizedCuboid
+    return np.array(
+        [
+            [cub[0, 0], cub[0, 1], cub[0, 2]],
+            [cub[1, 0], cub[0, 1], cub[0, 2]],
+            [cub[0, 0], cub[1, 1], cub[0, 2]],
+            [cub[1, 0], cub[1, 1], cub[0, 2]],
+            [cub[0, 0], cub[0, 1], cub[1, 2]],
+            [cub[1, 0], cub[0, 1], cub[1, 2]],
+            [cub[0, 0], cub[1, 1], cub[1, 2]],
+            [cub[1, 0], cub[1, 1], cub[1, 2]],
+        ]
+    )
+
+
+def splitCuboid(canonizedCuboid: np.ndarray, vec: np.ndarray) -> np.ndarray:
+    cub = canonizedCuboid
+    # fmt:off
+    return np.array([
+        # FIXME: The cubes volume will increase if vec is outside of it. Maybe
+        #        using the min/max of some values can fix this. Eg. min(cub[0],
+        #        vec) to prevent it from growing towards the origin. But make
+        #        sure that it does not prevent the cuboids with negative volume.
+        #        Maybe it is possible to clamp the cutting vector `vec` to be
+        #        within the cube.
+        [ [cub[0,0], cub[0,1], cub[0,2]],   [vec[0] -1, vec[1] -1, vec[2] -1 ] ], # 1
+        [ [vec[0],   cub[0,1], cub[0,2]],   [cub[1,0],  vec[1] -1, vec[2] -1 ] ], # 2
+        [ [cub[0,0], vec[1],   cub[0,2]],   [vec[0] -1, cub[1,1],  vec[2] -1 ] ], # 3
+        [ [vec[0],   vec[1],   cub[0,2]],   [cub[1,0],  cub[1,1],  vec[2] -1 ] ], # 4
+        [ [cub[0,0], cub[0,1], vec[2]  ],   [vec[0] -1, vec[1] -1, cub[1,2]  ] ], # 5
+        [ [vec[0],   cub[0,1], vec[2]  ],   [cub[1,0],  vec[1] -1, cub[1,2]  ] ], # 6
+        [ [cub[0,0], vec[1],   vec[2]  ],   [vec[0] -1, cub[1,1],  cub[1,2]  ] ], # 7
+        [ [vec[0],   vec[1],   vec[2]  ],   [cub[1,0],  cub[1,1],  cub[1,2]  ] ], # 8
+    ])
+    # fmt:on
+
+
+a3 = _make3d(a)
+ic(a3)
+ic(getCubeVertices(a3))
+ic("---")
+for vertex in getCubeVertices(a3):
+    ic(liesWithin(vertex, a3))
+
+#%%
+
+a3[0, 2] = 10
+a3[1, 2] = 20
+ic(a3)
+ic(splitCuboid(a3, [11, 11, 11]))
+
+
+pass
